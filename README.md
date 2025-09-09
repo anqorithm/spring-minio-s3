@@ -1,5 +1,13 @@
 # Spring Boot & MinIO S3
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Java](https://img.shields.io/badge/Java-17%2B-blue.svg)]()
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.5-green.svg)]()
+[![Google Style](https://img.shields.io/badge/style-google-blue.svg)](https://github.com/google/styleguide)
+[![Docker](https://img.shields.io/badge/Docker-blue.svg?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Docker Compose](https://img.shields.io/badge/Docker_Compose-blue.svg?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
+[![MinIO](https://img.shields.io/badge/MinIO-blue.svg?logo=minio&logoColor=white)](https://min.io/)
+
 A simple Java Spring Boot application demonstrating file operations using the S3 API with a self-hosted MinIO server.
 
 ## The Core Idea
@@ -23,9 +31,6 @@ This project shows how a Java application can use a standard S3 client to perfor
 
 ![MinIO Console - With File](assets/4.png)
 *The MinIO console now shows the newly uploaded object in the bucket.*
-
-![Docker Logs](assets/5.png)
-*Terminal output showing the successful startup of the MinIO and application containers.*
 
 ![API Usage via cURL](assets/6.png)
 *An example of interacting with the REST API using a cURL command.*
