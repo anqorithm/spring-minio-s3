@@ -1,4 +1,4 @@
-# Spring Boot & MinIO S3 Integration
+# Spring Boot & MinIO S3
 
 A demonstration project focused on a single idea: connecting a Spring Boot application to an S3-compatible object storage server using MinIO.
 
@@ -10,7 +10,7 @@ The **S3 API** is the industry standard for object storage. While originally fro
 
 This project shows how a Java application can use a standard S3 client to perform file operations against a self-hosted MinIO server.
 
-## Demonstration
+## POC
 
 ![Web Application UI](assets/1.png)
 *The main page of the web application, ready for file uploads.*
