@@ -69,6 +69,26 @@ The application's web interface is now available at `http://localhost:8080`.
 
 The Spring Boot application is configured to communicate with the MinIO server.
 
+### Dependencies
+
+This project uses the following dependencies for S3 integration:
+
+```xml
+<!-- MinIO SDK for Java -->
+<dependency>
+    <groupId>io.minio</groupId>
+    <artifactId>minio</artifactId>
+    <version>8.5.7</version>
+</dependency>
+
+<!-- AWS SDK S3 (alternative to MinIO SDK) -->
+<dependency>
+    <groupId>software.amazon.awssdk</groupId>
+    <artifactId>s3</artifactId>
+    <version>2.21.29</version>
+</dependency>
+```
+
 ### Configuration
 
 The connection is defined in `src/main/resources/application.properties`:
