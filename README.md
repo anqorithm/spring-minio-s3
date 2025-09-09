@@ -1,6 +1,6 @@
 # Spring Boot & MinIO S3
 
-A demonstration project focused on a single idea: connecting a Spring Boot application to an S3-compatible object storage server using MinIO.
+A simple Java Spring Boot application demonstrating file operations using the S3 API with a self-hosted MinIO server.
 
 ## The Core Idea
 
