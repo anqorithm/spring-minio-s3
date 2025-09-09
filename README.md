@@ -32,8 +32,6 @@ This project shows how a Java application can use a standard S3 client to perfor
 ![MinIO Console - With File](assets/4.png)
 *The MinIO console now shows the newly uploaded object in the bucket.*
 
-![File Download](assets/5.png)
-*After uploading a file through the web interface, the file can be downloaded from the web interface as well as from the API.*
 
 ![API Usage via cURL](assets/6.png)
 *An example of interacting with the REST API using a cURL command.*
