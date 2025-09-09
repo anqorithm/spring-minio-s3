@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MinIO S3 File Storage Demo - Anqorithm</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        
+        .header .subtitle {
+            font-size: 1rem;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+        
+        .header .author {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-style: italic;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .section {
+            padding: 30px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+        }
+        
+        .section h3 {
+            color: #1e293b;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .file-input-container {
+            margin: 20px 0;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-input-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background-color: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            color: #475569;
+        }
+        
+        .file-input-label:hover {
+            background-color: #e2e8f0;
+            border-color: #94a3b8;
+        }
+        
+        .selected-file {
+            margin: 15px 0;
+            padding: 12px 16px;
+            background-color: #f0f9ff;
+            border: 1px solid #e0f2fe;
+            border-radius: 6px;
+            color: #0c4a6e;
+            font-size: 0.9rem;
+        }
+        
+        button {
+            background-color: #0f172a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        button:hover {
+            background-color: #1e293b;
+        }
+        
+        button:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+        }
+        
+        button.delete-btn {
+            background-color: #dc2626;
+        }
+        
+        button.delete-btn:hover {
+            background-color: #b91c1c;
+        }
+        
+        button.refresh-btn {
+            background-color: #059669;
+        }
+        
+        button.refresh-btn:hover {
+            background-color: #047857;
+        }
+        
+        .file-list {
+            margin-top: 20px;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            margin: 8px 0;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+        
+        .file-item:hover {
+            background-color: #f1f5f9;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .message {
+            padding: 12px 16px;
+            margin: 15px 0;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        .success {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+        
+        .error {
+            background-color: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+        
+        .stats-card {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: #1e293b;
+            color: white;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .tech-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background-color: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-server"></i> S3 Protocol Demo</h1>
+    </div>
+    
+    <div class="container">
+        
+        <div class="section">
+            <h3><i class="fas fa-cloud-upload-alt"></i> Upload File</h3>
+            <div class="file-input-container">
+                <input type="file" id="fileInput" class="file-input">
+                <label for="fileInput" class="file-input-label">
+                    <i class="fas fa-file-plus"></i> Choose File
+                </label>
+            </div>
+            <div id="selectedFile" class="selected-file" style="display: none;"></div>
+            <button onclick="uploadFile()">
+                <i class="fas fa-upload"></i> Upload File
+            </button>
+            <div id="uploadMessage"></div>
+        </div>
+
+        <div class="section">
+            <h3><i class="fas fa-folder-open"></i> Files in Storage</h3>
+            <button onclick="loadFiles()" class="refresh-btn">
+                <i class="fas fa-sync-alt"></i> Refresh File List
+            </button>
+            <div id="filesList" class="file-list"></div>
+        </div>
+        
+        <div class="footer">
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <i class="fab fa-java"></i> Spring Boot
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-server"></i> S3 API
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-database"></i> MinIO
+                </div>
+            </div>
+            <p>© 2025 anqorithm & Abdullah Alqahtani</p>
+        </div>
+    </div>
+
+    <script>
+        // Load files on page load
+        window.onload = function() {
+            loadFiles();
+        };
+
+        // Show selected file name
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            const selectedFileDiv = document.getElementById('selectedFile');
+            
+            fileInput.addEventListener('change', function() {
+                if (this.files[0]) {
+                    selectedFileDiv.innerHTML = `<i class="fas fa-file"></i> Selected: ${this.files[0].name} (${(this.files[0].size / 1024 / 1024).toFixed(2)} MB)`;
+                    selectedFileDiv.style.display = 'block';
+                } else {
+                    selectedFileDiv.style.display = 'none';
+                }
+            });
+        });
+
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const messageDiv = document.getElementById('uploadMessage');
+            
+            if (!fileInput.files[0]) {
+                showMessage('Please select a file first', 'error', 'uploadMessage');
+                return;
+            }
+
+            // Show upload progress
+            const uploadBtn = event.target;
+            const originalText = uploadBtn.innerHTML;
+            uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+            uploadBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            fetch('/api/files/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                uploadBtn.innerHTML = originalText;
+                uploadBtn.disabled = false;
+                
+                if (data.error) {
+                    showMessage(data.error, 'error', 'uploadMessage');
+                } else {
+                    showMessage(`${data.message}: ${data.fileName}`, 'success', 'uploadMessage');
+                    fileInput.value = '';
+                    document.getElementById('selectedFile').style.display = 'none';
+                    loadFiles();
+                }
+            })
+            .catch(error => {
+                uploadBtn.innerHTML = originalText;
+                uploadBtn.disabled = false;
+                showMessage('Upload failed: ' + error.message, 'error', 'uploadMessage');
+            });
+        }
+
+        function loadFiles() {
+            fetch('/api/files/list')
+                .then(response => response.json())
+                .then(data => {
+                    const filesList = document.getElementById('filesList');
+                    
+                    if (data.error) {
+                        filesList.innerHTML = '<p class="message error">' + data.error + '</p>';
+                        return;
+                    }
+
+                    if (data.files.length === 0) {
+                        filesList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;"><i class="fas fa-folder-open"></i> No files found</p>';
+                        return;
+                    }
+
+                    let html = `<div class="stats-card">
+                        <i class="fas fa-chart-bar"></i>
+                        Total files: ${data.count}
+                    </div>`;
+                    
+                    data.files.forEach(fileName => {
+                        const fileIcon = getFileIcon(fileName);
+                        html += `
+                            <div class="file-item">
+                                <div class="file-name">
+                                    <i class="${fileIcon}"></i>
+                                    ${fileName}
+                                </div>
+                                <div class="file-actions">
+                                    <button onclick="downloadFile('${fileName}')" title="Download">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                    <button onclick="getFileUrl('${fileName}')" title="Get Share URL">
+                                        <i class="fas fa-share-alt"></i> Share
+                                    </button>
+                                    <button onclick="deleteFile('${fileName}')" class="delete-btn" title="Delete">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    filesList.innerHTML = html;
+                })
+                .catch(error => {
+                    document.getElementById('filesList').innerHTML = '<p class="message error">Failed to load files: ' + error.message + '</p>';
+                });
+        }
+
+        function getFileIcon(fileName) {
+            const ext = fileName.split('.').pop().toLowerCase();
+            switch (ext) {
+                case 'pdf': return 'fas fa-file-pdf';
+                case 'jpg': case 'jpeg': case 'png': case 'gif': case 'bmp': return 'fas fa-file-image';
+                case 'mp4': case 'avi': case 'mov': case 'wmv': return 'fas fa-file-video';
+                case 'mp3': case 'wav': case 'ogg': return 'fas fa-file-audio';
+                case 'doc': case 'docx': return 'fas fa-file-word';
+                case 'xls': case 'xlsx': return 'fas fa-file-excel';
+                case 'ppt': case 'pptx': return 'fas fa-file-powerpoint';
+                case 'zip': case 'rar': case '7z': return 'fas fa-file-archive';
+                case 'txt': return 'fas fa-file-alt';
+                case 'js': case 'css': case 'html': case 'json': case 'xml': return 'fas fa-file-code';
+                default: return 'fas fa-file';
+            }
+        }
+
+        function downloadFile(fileName) {
+            window.open('/api/files/download/' + fileName, '_blank');
+        }
+
+        function getFileUrl(fileName) {
+            fetch('/api/files/url/' + fileName)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                    } else {
+                        // Create a nice modal-like prompt
+                        const url = data.url;
+                        const result = prompt('Share URL (valid for 24 hours):\n\nCopy this URL to share the file:', url);
+                    }
+                })
+                .catch(error => {
+                    alert('Failed to get file URL: ' + error.message);
+                });
+        }
+
+        function deleteFile(fileName) {
+            if (!confirm(`Are you sure you want to delete "${fileName}"?\n\nThis action cannot be undone.`)) {
+                return;
+            }
+
+            fetch('/api/files/' + fileName, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    alert(data.message);
+                    loadFiles();
+                }
+            })
+            .catch(error => {
+                alert('Failed to delete file: ' + error.message);
+            });
+        }
+
+        function showMessage(message, type, elementId) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = '<div class="message ' + type + '">' + message + '</div>';
+            setTimeout(() => {
+                element.innerHTML = '';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
